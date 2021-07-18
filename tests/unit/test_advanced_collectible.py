@@ -32,6 +32,14 @@ def test_can_create_advanced_collectible(
     get_contract("vrf_coordinator").callBackWithRandomness(
         requestId, 777, advanced_collectible.address, {"from": get_account()}
     )
+    tx2 = advanced_collectible.createCollectible(
+        "None", {"from": get_account()}
+    )
+    rId2 = tx2.events["requestedCollectible"]["requestId"]
+    assert isinstance(tx2.txid, str)
+    get_contract("vrf_coordinator").callBackWithRandomness(
+        rId2, 777, advanced_collectible.address, {"from": get_account()}
+    )
     # Assert
-    assert advanced_collectible.tokenCounter() > 0
+    assert advanced_collectible.tokenCounter() == 2
     assert isinstance(advanced_collectible.tokenCounter(), int)
